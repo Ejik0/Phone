@@ -6,7 +6,8 @@
         {
             PhoneBook phoneBook = new PhoneBook();
 
-            phoneBook.PhoneBookFunctionality();
+             phoneBook.PhoneBookFunctionality();
+            //phoneBook.AddContact();
 
             Console.ReadLine();
         }

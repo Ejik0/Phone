@@ -38,6 +38,8 @@ namespace Phone
                 {
                     case "1":
                         AddContact();
+                        Console.WriteLine("Press any key to return to the menu");
+                        Console.ReadLine();
                         break;
                     case "2":
                         RemoveContact();
@@ -47,7 +49,7 @@ namespace Phone
                         break;
                     case "4":
                         ShowContact();
-                        Console.WriteLine("Press any key ...");
+                        Console.WriteLine("Press any key to return to the menu");
                         Console.ReadLine();
                         break;
                     case "5":
@@ -64,7 +66,7 @@ namespace Phone
                         break;
                     default:
                         Console.WriteLine("Invalid input");
-                        Console.WriteLine("Press any key ...");
+                        Console.WriteLine("Press any key to return to the menu");
                         Console.ReadLine();
                         break;
                 }
@@ -75,31 +77,35 @@ namespace Phone
         public void AddContact()
         {
 
-           
+
             Console.Write("Please write full name of contact: ");
             string? name = Console.ReadLine() ?? string.Empty;
 
-            
+
             if (name == "" || name == null) name = "Contact name was not assign";
 
             Console.Write("Please write the phone number of the contact: ");
 
-         
+
             string? phoneNumber = Console.ReadLine() ?? string.Empty;
 
-   
-            Contacts.Add(new Contact(name, phoneNumber));
-
-            
-            if (phoneNumber == "")
+            if (CheckPhoneNumberPattern(phoneNumber))
             {
-
-                Console.Write("\nAs a phone number was not inputted a 0 was assign\n");
+                Contacts.Add(new Contact(name, phoneNumber));
+                Console.WriteLine("\nContact was added!\n");
+            }
+            else
+            {
+                Console.WriteLine("Phone number was at an incorrect format, please use the one of the following patterns:\n" +
+                                  "+97205xxxxxxxx\n"+
+                                  "05xxxxxxxx\n" +
+                                  "05x-xxx-xxxx");
             }
 
-            Console.WriteLine("\nContact was added!\n");
+
+            
         }
-        public void RemoveContact()
+        private void RemoveContact()
         {
             Console.WriteLine("What contact should we removed: ");
             bool isValidID = int.TryParse(Console.ReadLine(), out int id);
@@ -127,38 +133,26 @@ namespace Phone
 
 
         }
-        public void SearchForContact()
-        {
-
-            Console.WriteLine("\nDo you want to search by name or by phone number:\n1.Name \n2.Phone Number\n");
-            bool choice = int.TryParse(Console.ReadLine(), out int id);
-
-            if (choice && id == 1)
-            {
-                SearchByName();
-            }
-
-            if (choice && id == 2)
-            {
-                SearchByPhoneNumber();
-            }
-
-
-
-        }
         private void SearchByName()
         {
-
-
 
             Console.WriteLine("Please type the name of the contact or a part of the name");
             string? contactName = Console.ReadLine() ?? string.Empty;
 
-            foreach (Contact? contact in Contacts)
+            foreach (var contact in Contacts)
             {
-                if (contact.FullName.Contains(contactName))
+
                 {
-                    Console.WriteLine(contact);
+
+                    if (!contact.FullName.Contains(contactName))
+                    {
+
+                        Console.WriteLine("Contact was not found");
+                    }
+                    else
+                    {
+                        Console.WriteLine(contact);
+                    }
                 }
             }
         }
@@ -171,17 +165,26 @@ namespace Phone
 
             foreach (var contact in Contacts)
             {
-                if (contact.PhoneNumber.Contains(phoneNumber))
+                if (!contact.PhoneNumber.Contains(phoneNumber))
+                {
+                    
+                    Console.WriteLine("Contact was not found");
+                }
+                else
                 {
                     Console.WriteLine(contact);
                 }
+                
             }
 
 
         }
-        public void ShowContact()
+        private void ShowContact()
         {
-
+            if(Contacts.Count < 1)
+            {
+                Console.WriteLine("No contacts yet, please add a contact using the Add Contact option\n");
+            }
             foreach (var contact in Contacts)
             {
                 Console.WriteLine(contact);
@@ -189,11 +192,24 @@ namespace Phone
 
 
         }
+        private static bool CheckPhoneNumberPattern(string number)
+        {
+            string internationalPattern = @"\+972|05\d{8}";
+            string withDashPattern = @"^05\d{1}-\d{3}-\d{4}";
 
-        
+            if (Regex.Match(number, internationalPattern).Success  || Regex.Match(number, withDashPattern).Success)
+            {
+                return true;
+            }
+            return false;
+        }
 
-        
 
-       
+
+
+
+
+
+
     }
 }
