@@ -208,7 +208,10 @@ namespace Phone
                     }
                     else
                     {
-                        Console.WriteLine(contact);
+                        if (contact.FullName == contactName)
+                        {
+                            Console.WriteLine(contact);
+                        }
                     }
 
                 }
@@ -226,26 +229,25 @@ namespace Phone
             {
                 Console.WriteLine("Please type the phone number");
                 string? phoneNumber = Console.ReadLine() ?? string.Empty;
-
-
-
-                if (Contacts.All(x => x.PhoneNumber != phoneNumber))
+                foreach (Contact contact in Contacts)
                 {
+ 
 
-                    Console.WriteLine("Contact was not found");
-                }
-                else
-                {
-                    foreach (Contact contact in Contacts)
+                    if (Contacts.All(x => x.PhoneNumber != phoneNumber))
                     {
 
-
-                        Console.WriteLine(contact);
+                        Console.WriteLine("Contact was not found");
+                    }
+                    else
+                    {
+                        if(contact.PhoneNumber == phoneNumber)
+                        {
+                            Console.WriteLine(contact);
+                        }
 
                     }
+
                 }
-
-
 
 
             }
