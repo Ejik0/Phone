@@ -43,7 +43,7 @@ namespace Phone
                     case "1":
                         Console.Clear();
                         AddContact();
-                        Console.WriteLine("Press any key to return to the menu");
+                        Console.WriteLine("Press any key to return to the main menu...");
                         Console.ReadLine();
 
                         break;
@@ -60,7 +60,7 @@ namespace Phone
                     case "4":
                         Console.Clear();
                         ShowContact();
-                        Console.WriteLine("Press any key to return to the menu...");
+
                         Console.ReadLine();
                         break;
                     case "5":
@@ -101,7 +101,7 @@ namespace Phone
                 Contacts.Add(new Contact(name, phoneNumber));
                 Console.WriteLine("\nContact was added!\n");
             }
-            
+
 
 
 
@@ -111,6 +111,7 @@ namespace Phone
             if (Contacts.Count < 1)
             {
                 Console.WriteLine("No contacts yet, please add a contact using the Add Contact option\n");
+                Console.WriteLine("Press any key to return to the main menu...");
             }
 
             else
@@ -142,6 +143,7 @@ namespace Phone
             if (Contacts.Count < 1)
             {
                 Console.WriteLine("No contacts yet, please add a contact using the Add Contact option\n");
+                Console.WriteLine("Press any key to return to the main menu...");
             }
 
             else
@@ -153,7 +155,7 @@ namespace Phone
 
                 try
                 {
-                    Console.WriteLine($"The contact you choose to edit is: {Contacts[choosenID -1]}");
+                    Console.WriteLine($"The contact you choose to edit is: {Contacts[choosenID - 1]}");
                     Console.Write("Would you like change the contact name? please press Y(yes) or N(no): ");
                     string changeName = Console.ReadLine()?.ToLower() ?? string.Empty;
                     if (changeName != "y" && changeName != "n")
@@ -167,7 +169,7 @@ namespace Phone
                         string? newContactName = Console.ReadLine();
                         Contacts[choosenID - 1].FullName = newContactName ?? string.Empty;
                     }
-                    
+
 
                     Console.Write("Would you like change the contact phone number? please press Y(yes) or N(no): ");
                     string changePhoneNumber = Console.ReadLine() ?? string.Empty;
@@ -183,7 +185,7 @@ namespace Phone
                         if (CheckPhoneNumberPattern(newContactMobile))
                         {
                             Contacts[choosenID - 1].PhoneNumber = newContactMobile;
-                            
+
                         }
                     }
 
@@ -211,15 +213,16 @@ namespace Phone
             if (Contacts.Count < 1)
             {
                 Console.WriteLine("No contacts yet, please add a contact using the Add Contact option\n");
+                Console.WriteLine("Press any key to return to the main menu...");
             }
             else
             {
                 Console.WriteLine("Please write the name or mobile of the contact you are searching for:");
                 string? nameOrMobile = Console.ReadLine()?.ToLower() ?? string.Empty;
 
-                List<Contact> foundContact = Contacts.Where(x => x.FullName.ToLower().Contains(nameOrMobile)  || x.PhoneNumber.Contains(nameOrMobile)).ToList();
+                List<Contact> foundContact = Contacts.Where(x => x.FullName.ToLower().Contains(nameOrMobile) || x.PhoneNumber.Contains(nameOrMobile)).ToList();
 
-                if(foundContact.Count <= 0)
+                if (foundContact.Count <= 0)
                 {
                     Console.WriteLine("No Contact was found, press any key to return to the main menu...");
                     return;
@@ -235,7 +238,7 @@ namespace Phone
                     Console.WriteLine(contact);
                 }
 
-                
+
 
 
             }
@@ -246,6 +249,7 @@ namespace Phone
             if (Contacts.Count < 1)
             {
                 Console.WriteLine("No contacts yet, please add a contact using the Add Contact option\n");
+                Console.WriteLine("Press any key to return to the main menu...");
 
                 return;
             }
@@ -254,8 +258,9 @@ namespace Phone
             Console.WriteLine("-----------------------------------");
             for (int i = 0; i < Contacts.Count; i++)
             {
-                Console.WriteLine($" {i + 1,-3}     {Contacts[i].FullName,-9}{Contacts[i].PhoneNumber,14}");
+                Console.WriteLine($" {i + 1,-3}     {Contacts[i].FullName,-9}{Contacts[i].PhoneNumber,14}\n");
             }
+            Console.WriteLine("Press any key to return to the main menu...");
 
 
         }
@@ -276,9 +281,8 @@ namespace Phone
                                   "05x-xxx-xxxx");
                 return false;
             }
-            
-        }
 
+        }
         private void EditContactMessage(string name, string number)
         {
             if (name == "y" && number == "y")
