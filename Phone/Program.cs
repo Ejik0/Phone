@@ -4,12 +4,18 @@
     {
         static void Main(string[] args)
         {
+            
+
+
             PhoneBook phoneBook = new PhoneBook();
 
-             phoneBook.PhoneBookFunctionality();
-            //phoneBook.AddContact();
+            
+            phoneBook.PhoneBookFunctionality();
 
             
+
+
+
 
             Console.ReadLine();
         }

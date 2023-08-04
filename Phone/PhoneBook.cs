@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -25,44 +26,49 @@ namespace Phone
             while (isRun)
             {
                 Console.Clear();
+                Console.WriteLine("******************");
+                Console.WriteLine("  Phone   Book");
+                Console.WriteLine("******************\n");
+
                 Console.WriteLine("Please choose an option\n" +
                                   "1.Add contact\n" +
                                   "2.Remove contact\n" +
                                   "3.Edit contact\n" +
                                   "4.Show all contacts\n" +
-                                  "5.Search contact by name\n" +
-                                  "6.Search contact by mobile phone\n" +
-                                  "7.Exit\n");
+                                  "5.Search for contact\n" +
+                                  "6.Exit\n");
 
                 switch (Console.ReadLine() ?? string.Empty)
                 {
                     case "1":
+                        Console.Clear();
                         AddContact();
                         Console.WriteLine("Press any key to return to the menu");
                         Console.ReadLine();
+
                         break;
                     case "2":
+                        Console.Clear();
                         RemoveContact();
                         Console.ReadLine();
                         break;
                     case "3":
+                        Console.Clear();
                         EditContact();
                         Console.ReadLine();
                         break;
                     case "4":
+                        Console.Clear();
                         ShowContact();
-                        Console.WriteLine("Press any key to return to the menu");
+                        Console.WriteLine("Press any key to return to the menu...");
                         Console.ReadLine();
                         break;
                     case "5":
-                        SearchByName();
+                        Console.Clear();
+                        SearchContact();
                         Console.ReadLine();
                         break;
                     case "6":
-                        SearchByPhoneNumber();
-                        Console.ReadLine();
-                        break;
-                    case "7":
                         isRun = false;
                         Console.WriteLine("GoodBye!");
                         break;
@@ -75,18 +81,17 @@ namespace Phone
 
             }
         }
-
         public void AddContact()
         {
 
 
-            Console.Write("Please write full name of contact: ");
+            Console.Write("Please write the name of your contact: ");
             string? name = Console.ReadLine() ?? string.Empty;
 
 
             if (name == "" || name == null) name = "Contact name was not assign";
 
-            Console.Write("Please write the phone number of the contact: ");
+            Console.Write("Please write the phone number of your contact: ");
 
 
             string? phoneNumber = Console.ReadLine() ?? string.Empty;
@@ -96,13 +101,7 @@ namespace Phone
                 Contacts.Add(new Contact(name, phoneNumber));
                 Console.WriteLine("\nContact was added!\n");
             }
-            else
-            {
-                Console.WriteLine("Phone number was at an incorrect format, please use the one of the following patterns:\n" +
-                                  "+97205xxxxxxxx\n" +
-                                  "05xxxxxxxx\n" +
-                                  "05x-xxx-xxxx");
-            }
+            
 
 
 
@@ -117,20 +116,19 @@ namespace Phone
             else
             {
                 ShowContact();
-                Console.WriteLine("Which contact would you like to remove?: ");
-
-                string contactName = Console.ReadLine() ?? string.Empty;
-
-
-                for (int i = 0; i < Contacts.Count; i++)
+                Console.WriteLine("Choose contact ID to delete from your contact: ");
+                _ = int.TryParse(Console.ReadLine(), out int choosenID);
+                try
                 {
-                    if (Contacts[i].FullName == contactName)
-                    {
-                        Contacts.Remove(Contacts[i]);
-                        Console.WriteLine("Contact was removed");
-                    }
-
+                    Contacts.Remove(Contacts[choosenID - 1]);
+                    Console.WriteLine("Contact was removed, please press any key to return to the main menu...");
                 }
+                catch
+                {
+                    Console.WriteLine($"Contact with ID {choosenID} was not found, press any key to return to the main menu...");
+                }
+
+
             }
 
 
@@ -149,33 +147,56 @@ namespace Phone
             else
             {
                 ShowContact();
-                Console.Write("\nWhich contact would like to edit: ");
-                string contactName = Console.ReadLine() ?? string.Empty;
+                Console.Write("\nPlease choose the ID of the contact you want to edit: \n");
+                _ = int.TryParse(Console.ReadLine(), out int choosenID);
+                Console.Clear();
 
-                foreach (var contact in Contacts)
+                try
                 {
-
-                    if (Contacts.All(x => x.FullName != contactName))
+                    Console.WriteLine($"The contact you choose to edit is: {Contacts[choosenID -1]}");
+                    Console.Write("Would you like change the contact name? please press Y(yes) or N(no): ");
+                    string changeName = Console.ReadLine()?.ToLower() ?? string.Empty;
+                    if (changeName != "y" && changeName != "n")
                     {
-
-                        Console.WriteLine("Contact was not found");
-
+                        Console.WriteLine("Invalid input, please press Y or N, press any key to return to the main menu");
+                        return;
                     }
-                    else
+                    if (changeName == "y")
                     {
-                        Console.WriteLine($"{contact.FullName} to what name change it? ");
-                        contact.FullName = Console.ReadLine() ?? string.Empty;
-                        Console.WriteLine($"{contact.PhoneNumber} to what phone number change it? ");
-                        string phoneNumber = Console.ReadLine() ?? string.Empty;
-                        if (phoneNumber != "" && CheckPhoneNumberPattern(phoneNumber))
+                        Console.Write("Change contact name to: ");
+                        string? newContactName = Console.ReadLine();
+                        Contacts[choosenID - 1].FullName = newContactName ?? string.Empty;
+                    }
+                    
+
+                    Console.Write("Would you like change the contact phone number? please press Y(yes) or N(no): ");
+                    string changePhoneNumber = Console.ReadLine() ?? string.Empty;
+                    if (changePhoneNumber != "y" && changePhoneNumber != "n")
+                    {
+                        Console.WriteLine("Invalid input, please press Y or N, press any key to return to the main menu");
+                        return;
+                    }
+                    if (changePhoneNumber == "y")
+                    {
+                        Console.Write("Change phone number to: ");
+                        string? newContactMobile = Console.ReadLine() ?? string.Empty;
+                        if (CheckPhoneNumberPattern(newContactMobile))
                         {
-                            contact.PhoneNumber = phoneNumber;
-
+                            Contacts[choosenID - 1].PhoneNumber = newContactMobile;
+                            
                         }
-                        Console.WriteLine("Contact was edited");
                     }
+
+                    EditContactMessage(changeName, changePhoneNumber);
 
                 }
+                catch
+                {
+                    Console.WriteLine($"Contact with ID {choosenID} was not found, press any key to return to the main menu...");
+                }
+
+
+
 
             }
 
@@ -185,7 +206,7 @@ namespace Phone
 
 
         }
-        private void SearchByName()
+        private void SearchContact()
         {
             if (Contacts.Count < 1)
             {
@@ -193,67 +214,31 @@ namespace Phone
             }
             else
             {
-                Console.WriteLine("Please type the name of the contact");
-                string? contactName = Console.ReadLine() ?? string.Empty;
+                Console.WriteLine("Please write the name or mobile of the contact you are searching for:");
+                string? nameOrMobile = Console.ReadLine()?.ToLower() ?? string.Empty;
 
-                foreach (var contact in Contacts)
+                List<Contact> foundContact = Contacts.Where(x => x.FullName.ToLower().Contains(nameOrMobile)  || x.PhoneNumber.Contains(nameOrMobile)).ToList();
+
+                if(foundContact.Count <= 0)
                 {
-
-
-
-                    if (Contacts.All(x => x.FullName != contactName))
-                    {
-
-                        Console.WriteLine("Contact was not found");
-                    }
-                    else
-                    {
-                        if (contact.FullName == contactName)
-                        {
-                            Console.WriteLine(contact);
-                        }
-                    }
-
-                }
-            }
-
-
-        }
-        private void SearchByPhoneNumber()
-        {
-            if (Contacts.Count < 1)
-            {
-                Console.WriteLine("No contacts yet, please add a contact using the Add Contact option\n");
-            }
-            else
-            {
-                Console.WriteLine("Please type the phone number");
-                string? phoneNumber = Console.ReadLine() ?? string.Empty;
-                foreach (Contact contact in Contacts)
-                {
- 
-
-                    if (Contacts.All(x => x.PhoneNumber != phoneNumber))
-                    {
-
-                        Console.WriteLine("Contact was not found");
-                    }
-                    else
-                    {
-                        if(contact.PhoneNumber == phoneNumber)
-                        {
-                            Console.WriteLine(contact);
-                        }
-
-                    }
-
+                    Console.WriteLine("No Contact was found, press any key to return to the main menu...");
+                    return;
                 }
 
+                Console.WriteLine("\n");
+                Console.WriteLine("Searching...\n");
+                Thread.Sleep(1500);
+                Console.WriteLine($"{foundContact.Count} contact/s was/were found:\n");
+
+                foreach (var contact in foundContact)
+                {
+                    Console.WriteLine(contact);
+                }
+
+                
+
 
             }
-
-
-
 
         }
         private void ShowContact()
@@ -261,10 +246,15 @@ namespace Phone
             if (Contacts.Count < 1)
             {
                 Console.WriteLine("No contacts yet, please add a contact using the Add Contact option\n");
+
+                return;
             }
-            foreach (var contact in Contacts)
+
+            Console.WriteLine(" ID | Contact Name | Contact Mobile");
+            Console.WriteLine("-----------------------------------");
+            for (int i = 0; i < Contacts.Count; i++)
             {
-                Console.WriteLine(contact);
+                Console.WriteLine($" {i + 1,-3}     {Contacts[i].FullName,-9}{Contacts[i].PhoneNumber,14}");
             }
 
 
@@ -278,7 +268,35 @@ namespace Phone
             {
                 return true;
             }
-            return false;
+            else
+            {
+                Console.WriteLine("Phone number was at an incorrect format, please use the one of the following patterns:\n" +
+                                  "+97205xxxxxxxx\n" +
+                                  "05xxxxxxxx\n" +
+                                  "05x-xxx-xxxx");
+                return false;
+            }
+            
+        }
+
+        private void EditContactMessage(string name, string number)
+        {
+            if (name == "y" && number == "y")
+            {
+                Console.WriteLine("Contact was edited, press any key to return to the main menu...");
+            }
+            else if (name == "y" && number == "n")
+            {
+                Console.WriteLine("Contact name edited, press any key to return to the main menu...");
+            }
+            else if (name == "n" && number == "y")
+            {
+                Console.WriteLine("Contact phone number edited, press any key to return to the main menu...");
+            }
+            else
+            {
+                Console.WriteLine("No changes were made for the contact.");
+            }
         }
 
 

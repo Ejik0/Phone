@@ -22,7 +22,7 @@ namespace Phone
 
         public override string ToString()
         {
-            return $"\nContact Name: {FullName} \nMobile: {PhoneNumber}";
+            return $"{FullName} {PhoneNumber}";
         }
 
 
